@@ -23,6 +23,24 @@ GET A
 FIND 10
 FIND 20
 FIND 30
+# --- Дополнительные тесты ---
+SET X 100
+BEGIN
+SET X 200
+BEGIN
+UNSET X
+GET X
+ROLLBACK
+GET X
+COMMIT
+GET X
+# Проверка ROLLBACK без транзакции
+ROLLBACK
+# Проверка COMMIT без транзакции
+COMMIT
+# Проверка UNSET без SET
+UNSET Z
+GET Z
 END
 """
 
@@ -37,7 +55,13 @@ EXPECTED_OUTPUT = [
     "20",
     "A",
     "A",
-    "NULL"
+    "NULL",
+    "NULL",  # GET X after UNSET in nested BEGIN
+    "200",   # GET X after ROLLBACK
+    "200",   # GET X after COMMIT
+    "NO TRANSACTION",  # ROLLBACK without BEGIN
+    "NO TRANSACTION",  # COMMIT without BEGIN
+    "NULL"  # GET Z after UNSET (never set)
 ]
 
 def run_test():

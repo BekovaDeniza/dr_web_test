@@ -78,10 +78,7 @@ class InMemoryDB:
         curr = self.data[-1]
         curr_counts = self.value_count[-1]
         for k, v in top.items():
-            if v is None:
-                curr.pop(k, None)
-            else:
-                curr[k] = v
+            curr[k] = v
         for k, v in top_counts.items():
             curr_counts[k] += v
 
